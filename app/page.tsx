@@ -24,7 +24,7 @@ export default function Page() {
   // ✅ Copy personal (edit if you want)
   const title = "Liz… ¿Quieres ser mi Valentín?";
   const subtitle = "San Valentín 2026 💗";
-  const finalLine = "Entonces hoy: cena romántica en casa, tú y yo.";
+  const finalLine = "Entonces Sábado: cena romántica en casa, tú y yo.";
 
   const photos = useMemo(() => PHOTOS, []);
 
