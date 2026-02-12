@@ -1,65 +1,198 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import Image from "next/image";
+import { useEffect, useMemo, useRef, useState } from "react";
+import confetti from "canvas-confetti";
+
+const PHOTOS = [
+  "/photos/1.jpeg",
+  "/photos/2.jpeg",
+  "/photos/3.jpeg",
+  "/photos/4.jpeg",
+  "/photos/5.jpeg",
+  "/photos/6.jpeg",
+  "/photos/7.jpeg",
+  "/photos/8.jpeg",
+];
+
+export default function Page() {
+  const [accepted, setAccepted] = useState(false);
+  const [noPos, setNoPos] = useState({ x: 0, y: 0 });
+  const [noTries, setNoTries] = useState(0);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  // ✅ Copy personal (edit if you want)
+  const title = "Liz… ¿Quieres ser mi Valentín?";
+  const subtitle = "San Valentín 2026 💗";
+  const finalLine = "Entonces hoy: cena romántica en casa, tú y yo.";
+
+  const photos = useMemo(() => PHOTOS, []);
+
+  useEffect(() => {
+    setNoPos({ x: 0, y: 0 });
+  }, []);
+
+  const popConfetti = () => {
+    const duration = 1200;
+    const end = Date.now() + duration;
+
+    (function frame() {
+      confetti({
+        particleCount: 6,
+        spread: 55,
+        startVelocity: 28,
+        scalar: 0.9,
+        origin: { x: 0.2 + Math.random() * 0.6, y: 0.65 },
+      });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+  };
+
+  const moveNoButton = () => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const maxX = Math.max(0, rect.width - 140);
+    const maxY = Math.max(0, 140);
+
+    const x = Math.floor((Math.random() - 0.5) * maxX);
+    const y = Math.floor((Math.random() - 0.3) * maxY);
+
+    setNoTries((t) => t + 1);
+    setNoPos({ x, y });
+  };
+
+  const onYes = () => {
+    setAccepted(true);
+    popConfetti();
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen bg-[#0b0b12] text-white">
+      {/* background glow */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute -top-24 left-1/2 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-fuchsia-500/25 blur-3xl" />
+        <div className="absolute top-[38%] -left-28 h-[380px] w-[380px] rounded-full bg-rose-500/20 blur-3xl" />
+        <div className="absolute bottom-[-140px] right-[-120px] h-[520px] w-[520px] rounded-full bg-indigo-500/25 blur-3xl" />
+      </div>
+
+      <div className="mx-auto w-full max-w-md px-5 pb-14 pt-10">
+        {/* Card */}
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur-xl">
+          <div className="px-6 pb-6 pt-7">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/80">
+              <span className="h-2 w-2 rounded-full bg-rose-400" />
+              San Valentín
+            </div>
+
+            {!accepted ? (
+              <section ref={containerRef} className="relative mt-5">
+                <h1 className="text-balance text-3xl font-semibold leading-tight">
+                  {title}
+                </h1>
+                <p className="mt-3 text-pretty text-sm leading-relaxed text-white/75">
+                  {subtitle}
+                </p>
+
+                <div className="mt-6 flex items-center gap-3">
+                  <button
+                    onClick={onYes}
+                    className="flex-1 rounded-2xl bg-gradient-to-r from-rose-500 to-fuchsia-600 px-4 py-3 text-sm font-semibold shadow-lg shadow-fuchsia-500/20 active:scale-[0.99]"
+                  >
+                    Sí 💖
+                  </button>
+
+                  <button
+                    onMouseEnter={moveNoButton}
+                    onTouchStart={moveNoButton}
+                    onClick={moveNoButton}
+                    className="relative rounded-2xl border border-white/15 bg-white/5 px-4 py-3 text-sm font-semibold text-white/85 active:scale-[0.99]"
+                    style={{
+                      transform: `translate(${noPos.x}px, ${noPos.y}px)`,
+                      transition: "transform 220ms ease",
+                    }}
+                    aria-label="No"
+                  >
+                    No 🙃
+                  </button>
+                </div>
+
+                <p className="mt-4 text-center text-xs text-white/55">
+                  {noTries > 0
+                    ? `Intentos de “No”: ${noTries} (no se vale 😄)`
+                    : "Toca el botón…"}
+                </p>
+              </section>
+            ) : (
+              <section className="mt-5 text-center">
+                <h2 className="text-3xl font-semibold">¡Sii! 💘</h2>
+                <p className="mx-auto mt-3 max-w-sm text-sm text-white/75">
+                  {finalLine}
+                </p>
+
+                {/* ✅ Personal message */}
+                <p className="mt-4 text-sm text-white/75">
+                  Amor, gracias por hacer mis días más bonitos. Te amo!
+                </p>
+
+                <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-left">
+                  <p className="text-sm font-semibold">Propuesta:</p>
+                  <ul className="mt-2 space-y-2 text-sm text-white/75">
+                    <li>🕯️ Luz tenue + velitas </li>
+                    <li>🍝 Cena romántica en casa </li>
+                    <li>🍷 Bebida rica </li>
+                    <li>🍰 Postre </li>
+                    <li>🔥 Masaje en el cuello </li>
+                  </ul>
+                </div>
+
+                <button
+                  onClick={() => popConfetti()}
+                  className="mt-6 w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-3 text-sm font-semibold text-white/90"
+                >
+                  Más confetti ✨
+                </button>
+              </section>
+            )}
+          </div>
+
+          {/* Divider */}
+          <div className="h-px w-full bg-white/10" />
+
+          {/* Photos */}
+          <div className="px-5 pb-6 pt-5">
+            <div className="flex items-end justify-between">
+              <p className="text-sm font-semibold">Nosotros</p>
+              <p className="text-xs text-white/55">scroll</p>
+            </div>
+
+            <div className="mt-4 flex gap-4 overflow-x-auto pb-2 [-webkit-overflow-scrolling:touch]">
+              {photos.map((src, idx) => (
+                <figure
+                  key={src}
+                  className="min-w-[190px] max-w-[190px] rotate-[-1deg] rounded-2xl border border-white/10 bg-white/5 p-3 shadow-lg shadow-black/30"
+                  style={{ transform: `rotate(${idx % 2 === 0 ? -2 : 2}deg)` }}
+                >
+                  <div className="relative h-[240px] w-full overflow-hidden rounded-xl">
+                    <Image
+                      src={src}
+                      alt={`foto ${idx + 1}`}
+                      fill
+                      className="object-cover"
+                      sizes="190px"
+                      priority={idx < 2}
+                    />
+                  </div>
+                  <figcaption className="mt-2 text-xs text-white/70">
+                    {idx === 0 ? "Mi favorita" : "❤️"}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
