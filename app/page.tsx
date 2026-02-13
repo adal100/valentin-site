@@ -13,6 +13,8 @@ const PHOTOS = [
   "/photos/6.jpeg",
   "/photos/7.jpeg",
   "/photos/8.jpeg",
+  "/photos/9.jpeg",
+  "/photos/10.jpeg",
 ];
 
 export default function Page() {
@@ -24,7 +26,7 @@ export default function Page() {
   // ✅ Copy personal (edit if you want)
   const title = "Liz… ¿Quieres ser mi Valentín?";
   const subtitle = "San Valentín 2026 💗";
-  const finalLine = "Entonces Sábado: cena romántica en casa, tú y yo.";
+  const finalLine = "Entonces Sábado: Cena romántica, tú y yo.";
 
   const photos = useMemo(() => PHOTOS, []);
 
@@ -137,13 +139,13 @@ export default function Page() {
                 </p>
 
                 <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-left">
-                  <p className="text-sm font-semibold">Propuesta:</p>
+                  <p className="text-sm font-semibold">Te propongo:</p>
                   <ul className="mt-2 space-y-2 text-sm text-white/75">
                     <li>🕯️ Luz tenue + velitas </li>
-                    <li>🍝 Cena romántica en casa </li>
+                    <li>🍝 Cena romántica </li>
                     <li>🍷 Bebida rica </li>
                     <li>🍰 Postre </li>
-                    <li>🔥 Masaje en el cuello </li>
+                    <li>😏 Ver Friends  </li>
                   </ul>
                 </div>
 
@@ -163,8 +165,7 @@ export default function Page() {
           {/* Photos */}
           <div className="px-5 pb-6 pt-5">
             <div className="flex items-end justify-between">
-              <p className="text-sm font-semibold">Nosotros</p>
-              <p className="text-xs text-white/55">scroll</p>
+              <p className="text-sm font-semibold">Nosotros ❤️</p>
             </div>
 
             <div className="mt-4 flex gap-4 overflow-x-auto pb-2 [-webkit-overflow-scrolling:touch]">
